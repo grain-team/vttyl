@@ -1,6 +1,7 @@
 # Vttyl
 
 > A dead simple vtt parser in Elixir.
+[![CircleCI](https://circleci.com/gh/grain-team/vttyl.svg?style=svg)](https://circleci.com/gh/grain-team/vttyl)
 
 ## Installation
 
