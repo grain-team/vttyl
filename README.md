@@ -50,7 +50,7 @@ redistributed under the terms specified in the [LICENSE](/LICENSE) file.
 
 ## About Grain
 
-Vttyl is maintained and funded by [Grain Intelligence, Inc](grain_home).
+Vttyl is maintained and funded by [Grain Intelligence, Inc][grain_home].
 The names and logos for Grain are trademarks of Grain Intelligence, Inc.
 
 
