@@ -43,6 +43,18 @@ iex> "same_text.vtt" |> File.stream!([], 2048) |> Vttyl.parse_stream() |> Enum.i
 [%Vttyl.Part{end: ~T[00:00:17.609], part: 1, start: ~T[00:00:15.450], text: "Hello world!"}]
 ```
 
+## License
+
+Vttyl is Copyright © 2019 Grain Intelligence, Inc. It is free software, and may be
+redistributed under the terms specified in the [LICENSE](/LICENSE) file.
+
+## About Grain
+
+Vttyl is maintained and funded by [Grain Intelligence, Inc](grain_home).
+The names and logos for Grain are trademarks of Grain Intelligence, Inc.
+
+
 For more information, see [the documentation][documentation].
 
 [documentation]: https://hexdocs.pm/vttyl
+[grain_home]: https://grain.co
