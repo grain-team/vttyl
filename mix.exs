@@ -11,16 +11,16 @@ defmodule Vttyl.MixProject do
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-
-      # Hex
       package: package(),
-      description: "A dead simple vtt parser.",
-
-      # Docs
+      source_url: @repo_url,
+      homepage_url: @repo_url,
       name: "Vttyl",
+      description: "A dead simple vtt parser.",
       docs: [
+        main: "readme",
         source_ref: "v#{@version}",
-        source_url: @repo_url
+        source_url: @repo_url,
+        extras: ["README.md"]
       ]
     ]
   end
@@ -33,8 +33,12 @@ defmodule Vttyl.MixProject do
 
   defp package do
     [
+      maintainers: ["Matt Lewis", "Ryan Johnson"],
       licenses: ["MIT"],
-      links: %{"GitHub" => @repo_url}
+      links: %{
+        "GitHub" => @repo_url,
+        "Made by Grain" => "https://grain.co"
+      }
     ]
   end
 
