@@ -17,8 +17,10 @@ defmodule Vttyl.MixProject do
       name: "Vttyl",
       description: "A dead simple vtt parser.",
       docs: [
+        main: "readme",
         source_ref: "v#{@version}",
-        source_url: @repo_url
+        source_url: @repo_url,
+        extras: ["README.md"]
       ]
     ]
   end
