@@ -15,7 +15,6 @@ defmodule Vttyl do
     content
     |> String.splitter("\n")
     |> do_parse()
-    |> Enum.into([])
   end
 
   @doc """
