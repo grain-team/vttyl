@@ -32,7 +32,7 @@ iex> vtt = """
            00:00:15.450 --> 00:00:17.609
            Hello world!
            """
-...> Vttyl.parse(vtt)
+...> Vttyl.parse(vtt) |> Enum.into([])
 [%Vttyl.Part{end: ~T[00:00:17.609], part: 1, start: ~T[00:00:15.450], text: "Hello world!"}]
 ```
 

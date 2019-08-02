@@ -41,7 +41,7 @@ defmodule VttylTest do
 
   describe "parse/1" do
     test "success" do
-      parsed = "small.vtt" |> get_vtt_file() |> File.read!() |> Vttyl.parse()
+      parsed = "small.vtt" |> get_vtt_file() |> File.read!() |> Vttyl.parse() |> Enum.into([])
       assert parsed == @expected_result
     end
   end

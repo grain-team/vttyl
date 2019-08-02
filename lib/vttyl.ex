@@ -9,13 +9,14 @@ defmodule Vttyl do
   Parse a string.
 
   This drops badly formatted vtt files. Consult your local doctor to ensure you formatted it correctly.
+
+  This returns a stream so you decide how to handle it!
   """
-  @spec parse(String.t()) :: [Part.t()]
+  @spec parse(String.t()) :: Enumerable.t()
   def parse(content) do
     content
     |> String.splitter("\n")
     |> do_parse()
-    |> Enum.into([])
   end
 
   @doc """
