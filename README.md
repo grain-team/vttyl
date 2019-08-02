@@ -11,7 +11,7 @@ To install Vttyl, add it to your `mix.exs` file.
 ```elixir
 def deps do
   [
-    {:vttyl, "~> 0.1.0"}
+    {:vttyl, "~> 0.2.0"}
   ]
 end
 ```
