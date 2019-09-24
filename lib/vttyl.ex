@@ -78,15 +78,30 @@ defmodule Vttyl do
     not is_nil(part) and not is_nil(start) and not is_nil(ts_end) and not is_nil(text)
   end
 
+  @ts_pattern ~S"(?:(\d{2,}):)?(\d{2}):(\d{2})\.(\d{3})"
+  @line_regex ~r/#{@ts_pattern} --> #{@ts_pattern}/
+  @ts_regex ~r/#{@ts_pattern}/
+
   # 00:00:00.000 --> 00:01:01.000
   defp timestamps?(line) do
-    Regex.match?(~r/(\d{2}:)?\d{2}:\d{2}\.\d{3} --> (\d{2}:)?\d{2}:\d{2}.\d{3}/, line)
+    Regex.match?(@line_regex, line)
   end
 
   defp parse_timestamps(line) do
     line
     |> String.split("-->")
-    |> Enum.map(fn ts -> ts |> String.trim() |> Time.from_iso8601!() end)
+    |> Enum.map(fn ts ->
+      ts = String.trim(ts)
+      [hour, minute, second, millisecond] = Regex.run(@ts_regex, ts, capture: :all_but_first)
+
+      case hour do
+        "" -> 0
+        hour -> String.to_integer(hour) * 3_600_000
+      end +
+        String.to_integer(minute) * 60_000 +
+        String.to_integer(second) * 1_000 +
+        String.to_integer(millisecond)
+    end)
     |> List.to_tuple()
   end
 
