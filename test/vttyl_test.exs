@@ -9,27 +9,27 @@ defmodule VttylTest do
 
   @expected_result [
     %Part{
-      end: ~T[00:00:17.609],
+      end: 17609,
       part: 1,
-      start: ~T[00:00:15.450],
+      start: 15450,
       text: "Hello"
     },
     %Part{
-      end: ~T[00:00:21.240],
+      end: 21240,
       part: 2,
-      start: ~T[00:00:20.700],
+      start: 20700,
       text: "Hi"
     },
     %Part{
-      end: ~T[00:01:04.470],
+      end: 64470,
       part: 3,
-      start: ~T[00:00:53.970],
+      start: 53970,
       text: "My name is Andy."
     },
     %Part{
-      end: ~T[00:01:16.380],
+      end: 76380,
       part: 4,
-      start: ~T[00:01:08.040],
+      start: 68040,
       text: "What a coincidence! Mine is too."
     }
   ]

@@ -33,14 +33,14 @@ iex> vtt = """
            Hello world!
            """
 ...> Vttyl.parse(vtt) |> Enum.into([])
-[%Vttyl.Part{end: ~T[00:00:17.609], part: 1, start: ~T[00:00:15.450], text: "Hello world!"}]
+[%Vttyl.Part{end: 17609, part: 1, start: 15450, text: "Hello world!"}]
 ```
 
 ### Stream Parsing
 
 ```elixir
 iex> "same_text.vtt" |> File.stream!([], 2048) |> Vttyl.parse_stream() |> Enum.into([])
-[%Vttyl.Part{end: ~T[00:00:17.609], part: 1, start: ~T[00:00:15.450], text: "Hello world!"}]
+[%Vttyl.Part{end: 17609, part: 1, start: 15450, text: "Hello world!"}]
 ```
 
 ## License
