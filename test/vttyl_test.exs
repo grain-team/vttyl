@@ -80,4 +80,31 @@ defmodule VttylTest do
       assert length(parsed) == 20
     end
   end
+
+  describe "encode/1" do
+    setup tags do
+      part = %Part{
+        part: Map.get(tags, :part, 1),
+        start: Map.get(tags, :start, 1000),
+        end: Map.get(tags, :end, 10_000),
+        text: Map.get(tags, :text, "Hello world")
+      }
+
+      {:ok, %{parts: [part]}}
+    end
+
+    def make_vtt(part, start_ts, end_ts, text) do
+      "WEBVTT\n\n#{part}\n#{start_ts} --> #{end_ts}\n#{text}\n"
+    end
+
+    test "basic", %{parts: parts} do
+      assert make_vtt(1, "00:01.000", "00:10.000", "Hello world") == Vttyl.encode(parts)
+    end
+
+    @tag start: 100_000_000
+    @tag end: 100_100_001
+    test "large numbers", %{parts: parts} do
+      assert make_vtt(1, "27:46:40.000", "27:48:20.001", "Hello world") == Vttyl.encode(parts)
+    end
+  end
 end
