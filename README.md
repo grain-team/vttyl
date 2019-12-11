@@ -20,9 +20,11 @@ Then, run `$ mix deps.get`.
 
 ## Usage
 
+### Decoding
+
 Vttyl has two basic ways to use it.
 
-### String Parsing
+#### String Parsing
 
 ```elixir
 iex> vtt = """
@@ -36,11 +38,26 @@ iex> vtt = """
 [%Vttyl.Part{end: 17609, part: 1, start: 15450, text: "Hello world!"}]
 ```
 
-### Stream Parsing
+#### Stream Parsing
 
 ```elixir
 iex> "same_text.vtt" |> File.stream!([], 2048) |> Vttyl.parse_stream() |> Enum.into([])
 [%Vttyl.Part{end: 17609, part: 1, start: 15450, text: "Hello world!"}]
+```
+
+### Encoding
+
+Vttyl also supports encoding parts.
+
+```elixir
+iex> parts = [%Vttyl.Part{end: 17609, part: 1, start: 15450, text: "Hello world!"}]
+...> Vttyle.encode(parts)
+"""
+WEBVTT
+1
+00:00:15.450 --> 00:00:17.609
+Hello world!
+"""
 ```
 
 ## License
