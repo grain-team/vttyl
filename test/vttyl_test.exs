@@ -81,7 +81,7 @@ defmodule VttylTest do
     end
   end
 
-  describe "encode/1" do
+  describe "encode_vtt/1" do
     setup tags do
       part = %Part{
         part: Map.get(tags, :part, 1),
@@ -98,13 +98,40 @@ defmodule VttylTest do
     end
 
     test "basic", %{parts: parts} do
-      assert make_vtt(1, "00:01.000", "00:10.000", "Hello world") == Vttyl.encode(parts)
+      assert make_vtt(1, "00:01.000", "00:10.000", "Hello world") == Vttyl.encode_vtt(parts)
     end
 
     @tag start: 100_000_000
     @tag end: 100_100_001
     test "large numbers", %{parts: parts} do
-      assert make_vtt(1, "27:46:40.000", "27:48:20.001", "Hello world") == Vttyl.encode(parts)
+      assert make_vtt(1, "27:46:40.000", "27:48:20.001", "Hello world") == Vttyl.encode_vtt(parts)
+    end
+  end
+
+  describe "encode_srt/1" do
+    setup tags do
+      part = %Part{
+        part: Map.get(tags, :part, 1),
+        start: Map.get(tags, :start, 1000),
+        end: Map.get(tags, :end, 10_000),
+        text: Map.get(tags, :text, "Hello world")
+      }
+
+      {:ok, %{parts: [part]}}
+    end
+
+    def make_srt(part, start_ts, end_ts, text) do
+      "#{part}\n#{start_ts} --> #{end_ts}\n#{text}\n"
+    end
+
+    test "basic", %{parts: parts} do
+      assert make_srt(1, "00:01,000", "00:10,000", "Hello world") == Vttyl.encode_srt(parts)
+    end
+
+    @tag start: 100_000_000
+    @tag end: 100_100_001
+    test "large numbers", %{parts: parts} do
+      assert make_srt(1, "27:46:40,000", "27:48:20,001", "Hello world") == Vttyl.encode_srt(parts)
     end
   end
 end

@@ -45,11 +45,31 @@ defmodule Vttyl do
   end
 
   @doc """
-  Encodes a list of vtt parts into a vtt file.
+  Encodes a list of parts into a vtt file.
+  """
+  @doc since: "0.4.0"
+  @spec encode_vtt([Part.t()]) :: String.t()
+  def encode_vtt(parts) do
+    Enum.join(["WEBVTT" | Enum.map(parts, &Encode.encode_part(&1, :vtt))], "\n\n") <> "\n"
+  end
+
+  @doc """
+  Encodes a list of parts into a srt file.
+  """
+  @doc since: "0.4.0"
+  @spec encode_srt([Part.t()]) :: String.t()
+  def encode_srt(parts) do
+    Enum.join([Enum.map(parts, &Encode.encode_part(&1, :srt))], "\n\n") <> "\n"
+  end
+
+  @doc """
+  Encodes a list of parts into a vtt file.
+
+  This is currently deprecated use encode_vtt/1 or encode_srt/1 instead
   """
   @doc since: "0.3.0"
   @spec encode([Part.t()]) :: String.t()
   def encode(parts) do
-    Enum.join(["WEBVTT" | Enum.map(parts, &Encode.encode_part/1)], "\n\n") <> "\n"
+    Enum.join(["WEBVTT" | Enum.map(parts, &Encode.encode_part(&1, :vtt))], "\n\n") <> "\n"
   end
 end
