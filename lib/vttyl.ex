@@ -59,7 +59,9 @@ defmodule Vttyl do
   @doc since: "0.4.0"
   @spec encode_srt([Part.t()]) :: String.t()
   def encode_srt(parts) do
-    Enum.join([Enum.map(parts, &Encode.encode_part(&1, :srt))], "\n\n") <> "\n"
+    Enum.map(parts, &Encode.encode_part(&1, :srt))
+    |> Enum.join("\n\n")
+    |> Kernel.<>("\n")
   end
 
   @doc """

@@ -128,6 +128,29 @@ defmodule VttylTest do
       assert make_srt(1, "00:01,000", "00:10,000", "Hello world") == Vttyl.encode_srt(parts)
     end
 
+    test "multi line" do
+      parts = [
+        %Part{
+          part: 1,
+          start: 1000,
+          end: 10_000,
+          text: "Hello"
+        },
+        %Part{
+          part: 2,
+          start: 2000,
+          end: 20_000,
+          text: "world"
+        }
+      ]
+
+      expect =
+        make_srt(1, "00:01,000", "00:10,000", "Hello") <>
+          "\n" <> make_srt(2, "00:02,000", "00:20,000", "world")
+
+      assert expect == Vttyl.encode_srt(parts)
+    end
+
     @tag start: 100_000_000
     @tag end: 100_100_001
     test "large numbers", %{parts: parts} do
