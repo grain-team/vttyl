@@ -89,7 +89,7 @@ defmodule VttylTest do
         |> Stream.map(& &1.voice)
         |> Enum.into([])
 
-      assert ["Esme", "Mary", "Esme", "Mary"] == parsed
+      assert ["Esme", "Mary", "Esme F", "Mary"] == parsed
     end
   end
 

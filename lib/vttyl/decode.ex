@@ -60,9 +60,10 @@ defmodule Vttyl.Decode do
     Regex.match?(@line_regex, line)
   end
 
+  @annotation_space_regex ~r/[ \t]/
   defp parse_text("<v" <> line) do
     [voice, text] = String.split(line, ">", parts: 2)
-    voice = String.split(voice, " ") |> List.last()
+    [_, voice] = String.split(voice, @annotation_space_regex, parts: 2)
     {voice, text}
   end
 
