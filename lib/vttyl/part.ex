@@ -3,7 +3,8 @@ defmodule Vttyl.Part do
           part: non_neg_integer(),
           start: millisecond :: integer,
           end: millisecond :: integer,
-          text: String.t()
+          text: String.t(),
+          voice: String.t() | nil
         }
-  defstruct [:start, :end, :text, :part]
+  defstruct [:start, :end, :text, :part, :voice]
 end

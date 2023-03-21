@@ -1,10 +1,19 @@
 defmodule Vttyl.Encode do
   @moduledoc false
+  alias Vttyl.Part
 
   @spec encode_part(Part.t(), :vtt | :srt) :: String.t()
   def encode_part(part, type) do
     ts = fmt_timestamp(part.start, type) <> " --> " <> fmt_timestamp(part.end, type)
-    Enum.join([part.part, ts, part.text], "\n")
+
+    text =
+      if type == :vtt && part.voice do
+        "<v #{part.voice}>" <> part.text
+      else
+        part.text
+      end
+
+    Enum.join([part.part, ts, text], "\n")
   end
 
   @hour_ms 3_600_000

@@ -79,6 +79,18 @@ defmodule VttylTest do
 
       assert length(parsed) == 20
     end
+
+    test "voice spans" do
+      parsed =
+        "voice.vtt"
+        |> get_vtt_file()
+        |> File.stream!([], 2048)
+        |> Vttyl.parse_stream()
+        |> Stream.map(& &1.voice)
+        |> Enum.into([])
+
+      assert ["Esme", "Mary", "Esme", "Mary"] == parsed
+    end
   end
 
   describe "encode_vtt/1" do

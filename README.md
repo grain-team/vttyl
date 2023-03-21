@@ -35,15 +35,32 @@ iex> vtt = """
            Hello world!
            """
 ...> Vttyl.parse(vtt) |> Enum.into([])
-[%Vttyl.Part{end: 17609, part: 1, start: 15450, text: "Hello world!"}]
+[%Vttyl.Part{end: 17609, part: 1, start: 15450, text: "Hello world!", voice: nil}]
 ```
 
 #### Stream Parsing
 
 ```elixir
 iex> "same_text.vtt" |> File.stream!([], 2048) |> Vttyl.parse_stream() |> Enum.into([])
-[%Vttyl.Part{end: 17609, part: 1, start: 15450, text: "Hello world!"}]
+[%Vttyl.Part{end: 17609, part: 1, start: 15450, text: "Hello world!", voice: nil}]
 ```
+
+#### Simple Voice Spans
+
+(Closing voice spans are currently not supported)
+
+```elixir
+iex> vtt = """
+           WEBVTT
+
+           1
+           00:00:15.450 --> 00:00:17.609
+           <v Andy>Hello world!
+           """
+...> Vttyl.parse(vtt) |> Enum.into([])
+[%Vttyl.Part{end: 17609, part: 1, start: 15450, text: "Hello world!", voice: "Andy"}]
+```
+
 
 ### Encoding
 
@@ -57,6 +74,17 @@ WEBVTT
 1
 00:00:15.450 --> 00:00:17.609
 Hello world!
+"""
+```
+
+```elixir
+iex> parts = [%Vttyl.Part{end: 17609, part: 1, start: 15450, text: "Hello world!", voice: "Andy"}]
+...> Vttyle.encode(parts)
+"""
+WEBVTT
+1
+00:00:15.450 --> 00:00:17.609
+<v Andy>Hello world!
 """
 ```
 
