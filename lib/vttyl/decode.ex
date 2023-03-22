@@ -25,7 +25,8 @@ defmodule Vttyl.Decode do
 
         # Text content should be on one line and the other stuff should have appeared
         not is_nil(acc.part) and not is_nil(acc.start) and not is_nil(acc.end) and line != "" ->
-          %Part{acc | text: line}
+          {voice, text} = parse_text(line)
+          %Part{acc | text: text, voice: voice}
 
         true ->
           acc
@@ -58,6 +59,15 @@ defmodule Vttyl.Decode do
   defp timestamps?(line) do
     Regex.match?(@line_regex, line)
   end
+
+  @annotation_space_regex ~r/[ \t]/
+  defp parse_text("<v" <> line) do
+    [voice, text] = String.split(line, ">", parts: 2)
+    [_, voice] = String.split(voice, @annotation_space_regex, parts: 2)
+    {voice, text}
+  end
+
+  defp parse_text(text), do: {nil, text}
 
   defp parse_timestamps(line) do
     line
