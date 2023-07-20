@@ -24,7 +24,7 @@ defmodule Vttyl.Encode do
 
     # Lop off hours if there aren't any
     hr_and_min =
-      if hours <= 0 do
+      if hours <= 0 and type == :vtt do
         prefix_fmt(minutes)
       else
         [hours, minutes]
