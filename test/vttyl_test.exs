@@ -137,7 +137,7 @@ defmodule VttylTest do
     end
 
     test "basic", %{parts: parts} do
-      assert make_srt(1, "00:01,000", "00:10,000", "Hello world") == Vttyl.encode_srt(parts)
+      assert make_srt(1, "00:00:01,000", "00:00:10,000", "Hello world") == Vttyl.encode_srt(parts)
     end
 
     test "multi line" do
@@ -157,8 +157,8 @@ defmodule VttylTest do
       ]
 
       expect =
-        make_srt(1, "00:01,000", "00:10,000", "Hello") <>
-          "\n" <> make_srt(2, "00:02,000", "00:20,000", "world")
+        make_srt(1, "00:00:01,000", "00:00:10,000", "Hello") <>
+          "\n" <> make_srt(2, "00:00:02,000", "00:00:20,000", "world")
 
       assert expect == Vttyl.encode_srt(parts)
     end
