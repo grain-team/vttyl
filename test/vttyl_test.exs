@@ -44,6 +44,34 @@ defmodule VttylTest do
       parsed = "small.vtt" |> get_vtt_file() |> File.read!() |> Vttyl.parse() |> Enum.into([])
       assert parsed == @expected_result
     end
+
+    test "parses without part numbers" do
+      parsed =
+        "small_without_part.vtt"
+        |> get_vtt_file()
+        |> File.read!()
+        |> Vttyl.parse()
+        |> Enum.into([])
+
+      assert parsed == [
+               %Vttyl.Part{start: 15450, end: 17609, text: "Hello", part: 0, voice: nil},
+               %Vttyl.Part{start: 20700, end: 21240, text: "Hi", part: 0, voice: nil},
+               %Vttyl.Part{
+                 start: 53970,
+                 end: 64470,
+                 text: "My name is Andy.",
+                 part: 0,
+                 voice: nil
+               },
+               %Vttyl.Part{
+                 start: 68040,
+                 end: 76380,
+                 text: "What a coincidence! Mine is too.",
+                 part: 0,
+                 voice: nil
+               }
+             ]
+    end
   end
 
   describe "parse_stream/1" do

@@ -18,6 +18,10 @@ defmodule Vttyl.Decode do
         Regex.match?(~r/^\d+$/, line) ->
           %Part{acc | part: String.to_integer(line)}
 
+        is_nil(acc.part) and timestamps?(line) ->
+          {start_ts, end_ts} = parse_timestamps(line)
+          %Part{acc | start: start_ts, end: end_ts, part: 0}
+
         not is_nil(acc.part) and timestamps?(line) ->
           {start_ts, end_ts} = parse_timestamps(line)
 
