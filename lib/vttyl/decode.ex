@@ -19,13 +19,13 @@ defmodule Vttyl.Decode do
           %Part{acc | part: String.to_integer(line)}
 
         is_nil(acc.part) and timestamps?(line) ->
-          {start_ts, end_ts} = parse_timestamps(line)
-          %Part{acc | start: start_ts, end: end_ts, part: 0}
+          {start_ts, end_ts, settings} = parse_cue_timings(line)
+          %Part{acc | start: start_ts, end: end_ts, part: 0, settings: settings}
 
         not is_nil(acc.part) and timestamps?(line) ->
-          {start_ts, end_ts} = parse_timestamps(line)
+          {start_ts, end_ts, settings} = parse_cue_timings(line)
 
-          %Part{acc | start: start_ts, end: end_ts}
+          %Part{acc | start: start_ts, end: end_ts, settings: settings}
 
         # Text content should be on one line and the other stuff should have appeared
         not is_nil(acc.part) and not is_nil(acc.start) and not is_nil(acc.end) and line != "" ->
@@ -73,21 +73,29 @@ defmodule Vttyl.Decode do
 
   defp parse_text(text), do: {nil, text}
 
-  defp parse_timestamps(line) do
-    line
-    |> String.split("-->")
-    |> Enum.map(fn ts ->
-      ts = String.trim(ts)
-      [hour, minute, second, millisecond] = Regex.run(@ts_regex, ts, capture: :all_but_first)
+  defp parse_cue_timings(line) do
+    [start_ts, _separator, end_ts | settings] = Regex.split(~r/[ \t]/, line)
+    {parse_timestamp(start_ts), parse_timestamp(end_ts), parse_settings(settings)}
+  end
 
-      case hour do
-        "" -> 0
-        hour -> String.to_integer(hour) * 3_600_000
-      end +
-        String.to_integer(minute) * 60_000 +
-        String.to_integer(second) * 1_000 +
-        String.to_integer(millisecond)
-    end)
-    |> List.to_tuple()
+  defp parse_timestamp(ts) do
+    [hour, minute, second, millisecond] = Regex.run(@ts_regex, ts, capture: :all_but_first)
+
+    case hour do
+      "" -> 0
+      hour -> String.to_integer(hour) * 3_600_000
+    end +
+      String.to_integer(minute) * 60_000 +
+      String.to_integer(second) * 1_000 +
+      String.to_integer(millisecond)
+  end
+
+  defp parse_settings([]), do: []
+
+  defp parse_settings(settings) do
+    for setting <- settings do
+      [key, value] = String.split(setting, ":")
+      {key, value}
+    end
   end
 end

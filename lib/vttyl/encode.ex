@@ -4,7 +4,9 @@ defmodule Vttyl.Encode do
 
   @spec encode_part(Part.t(), :vtt | :srt) :: String.t()
   def encode_part(part, type) do
-    ts = fmt_timestamp(part.start, type) <> " --> " <> fmt_timestamp(part.end, type)
+    ts =
+      fmt_timestamp(part.start, type) <>
+        " --> " <> fmt_timestamp(part.end, type) <> fmt_settings(part.settings)
 
     text =
       if type == :vtt && part.voice do
@@ -33,6 +35,20 @@ defmodule Vttyl.Encode do
       end
 
     hr_and_min <> ":" <> fmt_seconds(ms_wo_mins, type)
+  end
+
+  defp fmt_settings([]), do: ""
+  defp fmt_settings(nil), do: ""
+
+  defp fmt_settings(settings) do
+    setting_strings =
+      settings
+      |> Enum.map(fn {key, value} ->
+        "#{key}:#{value}"
+      end)
+      |> Enum.join(" ")
+
+    " #{setting_strings}"
   end
 
   defp mod(dividend, divisor) do

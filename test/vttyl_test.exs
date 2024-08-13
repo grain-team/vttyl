@@ -72,6 +72,55 @@ defmodule VttylTest do
                }
              ]
     end
+
+    test "parses cue settings" do
+      parsed =
+        "small_with_settings.vtt"
+        |> get_vtt_file()
+        |> File.read!()
+        |> Vttyl.parse()
+        |> Enum.into([])
+
+      assert parsed == [
+               %Vttyl.Part{
+                 start: 15450,
+                 end: 17609,
+                 text: "Hello",
+                 part: 0,
+                 voice: nil,
+                 settings: [
+                   {"align", "middle"},
+                   {"line", "85%"},
+                   {"position", "50%"},
+                   {"size", "40%"}
+                 ]
+               },
+               %Vttyl.Part{
+                 start: 20700,
+                 end: 21240,
+                 text: "Hi",
+                 part: 0,
+                 voice: nil,
+                 settings: []
+               },
+               %Vttyl.Part{
+                 start: 53970,
+                 end: 64470,
+                 text: "My name is Andy.",
+                 part: 0,
+                 voice: nil,
+                 settings: [{"align", "center"}]
+               },
+               %Vttyl.Part{
+                 start: 68040,
+                 end: 76380,
+                 text: "What a coincidence! Mine is too.",
+                 part: 0,
+                 voice: nil,
+                 settings: [{"align", "center"}]
+               }
+             ]
+    end
   end
 
   describe "parse_stream/1" do
@@ -145,6 +194,36 @@ defmodule VttylTest do
     @tag end: 100_100_001
     test "large numbers", %{parts: parts} do
       assert make_vtt(1, "27:46:40.000", "27:48:20.001", "Hello world") == Vttyl.encode_vtt(parts)
+    end
+
+    test "encodes settings" do
+      parts = [
+        %Part{
+          part: 1,
+          start: 1000,
+          end: 10_000,
+          text: "Hello world",
+          settings: [{"align", "center"}]
+        }
+      ]
+
+      assert Vttyl.encode_vtt(parts) ==
+               "WEBVTT\n\n1\n00:01.000 --> 00:10.000 align:center\nHello world\n"
+    end
+
+    test "encodes multiple settings" do
+      parts = [
+        %Part{
+          part: 1,
+          start: 1000,
+          end: 10_000,
+          text: "Hello world",
+          settings: [{"align", "center"}, {"line", "85%"}, {"position", "50%"}, {"size", "40%"}]
+        }
+      ]
+
+      assert Vttyl.encode_vtt(parts) ==
+               "WEBVTT\n\n1\n00:01.000 --> 00:10.000 align:center line:85% position:50% size:40%\nHello world\n"
     end
   end
 
