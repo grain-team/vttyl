@@ -2,6 +2,9 @@ defmodule Vttyl.Decode do
   @moduledoc false
 
   alias Vttyl.Part
+  alias Vttyl.Header
+
+  @header_regex ~r/^(\S*?:\S*?)(,\S*?:\S*?)*$/
 
   def parse(enum_content) do
     enum_content
@@ -17,6 +20,17 @@ defmodule Vttyl.Decode do
       cond do
         Regex.match?(~r/^\d+$/, line) ->
           %Part{acc | part: String.to_integer(line)}
+
+        is_nil(acc.part) and header?(line) ->
+          values =
+            line
+            |> String.split(",")
+            |> Enum.map(fn kv_pair_string ->
+              [key, value] = String.split(kv_pair_string, ":", parts: 2)
+              {key, value}
+            end)
+
+          %Header{values: values}
 
         is_nil(acc.part) and timestamps?(line) ->
           {start_ts, end_ts, settings} = parse_cue_timings(line)
@@ -51,8 +65,14 @@ defmodule Vttyl.Decode do
     end
   end
 
+  defp full_chunk?(%Header{}), do: true
+
   defp full_chunk?(%Part{part: part, start: start, end: ts_end, text: text}) do
     not is_nil(part) and not is_nil(start) and not is_nil(ts_end) and not is_nil(text)
+  end
+
+  defp header?(line) do
+    Regex.match?(@header_regex, line)
   end
 
   @ts_pattern ~S"(?:(\d{2,}):)?(\d{2}):(\d{2})\.(\d{3})"

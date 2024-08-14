@@ -1,9 +1,18 @@
 defmodule Vttyl.Encode do
   @moduledoc false
   alias Vttyl.Part
+  alias Vttyl.Header
 
-  @spec encode_part(Part.t(), :vtt | :srt) :: String.t()
-  def encode_part(part, type) do
+  @spec encode_part(Header.t() | Part.t(), :vtt | :srt) :: String.t()
+  def encode_part(%Header{} = header, _type) do
+    header.values
+    |> Enum.map(fn {key, value} ->
+      "#{key}:#{value}"
+    end)
+    |> Enum.join(",")
+  end
+
+  def encode_part(%Part{} = part, type) do
     ts =
       fmt_timestamp(part.start, type) <>
         " --> " <> fmt_timestamp(part.end, type) <> fmt_settings(part.settings)

@@ -6,6 +6,7 @@ defmodule VttylTest do
   doctest Vttyl
 
   alias Vttyl.Part
+  alias Vttyl.Header
 
   @expected_result [
     %Part{
@@ -121,6 +122,135 @@ defmodule VttylTest do
                }
              ]
     end
+
+    test "parses headers" do
+      parsed =
+        "small_with_header.vtt"
+        |> get_vtt_file()
+        |> File.read!()
+        |> Vttyl.parse()
+        |> Enum.into([])
+
+      assert parsed == [
+               %Vttyl.Header{
+                 values: [{"X-TIMESTAMP-MAP=LOCAL", "00:00:00.000"}, {"MPEGTS", "900000"}]
+               },
+               %Vttyl.Part{
+                 start: 15450,
+                 end: 17609,
+                 text: "Hello",
+                 part: 1,
+                 voice: nil,
+                 settings: []
+               },
+               %Vttyl.Part{
+                 start: 20700,
+                 end: 21240,
+                 text: "Hi",
+                 part: 2,
+                 voice: nil,
+                 settings: []
+               },
+               %Vttyl.Part{
+                 start: 53970,
+                 end: 64470,
+                 text: "My name is Andy.",
+                 part: 3,
+                 voice: nil,
+                 settings: []
+               },
+               %Vttyl.Part{
+                 start: 68040,
+                 end: 76380,
+                 text: "What a coincidence! Mine is too.",
+                 part: 4,
+                 voice: nil,
+                 settings: []
+               }
+             ]
+    end
+
+    test "does not parse headers when none exist" do
+      vtt = """
+        WEBVTT
+
+        1
+        00:00:04.047 --> 00:00:09.135
+        [musical swirl]
+
+        2
+        00:00:10.010 --> 00:00:10.638
+        I’m Josh Merrill.
+
+        3
+        00:00:12.722 --> 00:00:13.473
+        [Goalie:Oh.]
+      """
+
+      parsed =
+        vtt
+        |> Vttyl.parse()
+        |> Enum.into([])
+
+      assert Enum.all?(parsed, &match?(%Part{}, &1))
+    end
+
+    test "parses headers correctly" do
+      vtt = """
+        WEBVTT
+        X-TIMESTAMP-MAP=LOCAL:00:00:00.000,MPEGTS:900000
+
+        1
+        00:00:04.047 --> 00:00:09.135
+        [musical swirl]
+
+        2
+        00:00:10.010 --> 00:00:10.638
+        I’m Josh Merrill.
+
+        3
+        00:00:12.722 --> 00:00:13.473
+        [Goalie:Oh.]
+      """
+
+      parsed =
+        vtt
+        |> Vttyl.parse()
+        |> Enum.into([])
+
+      refute Enum.all?(parsed, &match?(%Part{}, &1))
+      assert Enum.filter(parsed, &match?(%Header{}, &1)) |> Enum.count() == 1
+      assert Enum.filter(parsed, &match?(%Part{}, &1)) |> Enum.count() == 3
+    end
+
+    test "parses many headers correctly" do
+      vtt = """
+        WEBVTT
+        X-TIMESTAMP-MAP=LOCAL:00:00:00.000
+        MPEGTS:900000
+
+        1
+        00:00:04.047 --> 00:00:09.135
+        [musical swirl]
+
+        2
+        00:00:10.010 --> 00:00:10.638
+        I’m Josh Merrill.
+
+        3
+        00:00:12.722 --> 00:00:13.473
+        [Goalie:Oh.]
+      """
+
+      parsed =
+        vtt
+        |> Vttyl.parse()
+        |> Enum.into([])
+
+      refute Enum.all?(parsed, &match?(%Part{}, &1))
+      assert Enum.filter(parsed, &match?(%Header{}, &1)) |> Enum.count() == 2
+      assert Enum.filter(parsed, &match?(%Part{}, &1)) |> Enum.count() == 3
+    end
   end
 
   describe "parse_stream/1" do
@@ -224,6 +354,49 @@ defmodule VttylTest do
 
       assert Vttyl.encode_vtt(parts) ==
                "WEBVTT\n\n1\n00:01.000 --> 00:10.000 align:center line:85% position:50% size:40%\nHello world\n"
+    end
+
+    test "encodes headers" do
+      parts = [
+        %Vttyl.Header{
+          values: [{"X-TIMESTAMP-MAP=LOCAL", "00:00:00.000"}, {"MPEGTS", "900000"}]
+        },
+        %Vttyl.Part{
+          start: 15450,
+          end: 17609,
+          text: "Hello",
+          part: 1,
+          voice: nil,
+          settings: []
+        },
+        %Vttyl.Part{
+          start: 20700,
+          end: 21240,
+          text: "Hi",
+          part: 2,
+          voice: nil,
+          settings: []
+        },
+        %Vttyl.Part{
+          start: 53970,
+          end: 64470,
+          text: "My name is Andy.",
+          part: 3,
+          voice: nil,
+          settings: []
+        },
+        %Vttyl.Part{
+          start: 68040,
+          end: 76380,
+          text: "What a coincidence! Mine is too.",
+          part: 4,
+          voice: nil,
+          settings: []
+        }
+      ]
+
+      encoded = Vttyl.encode_vtt(parts)
+      String.contains?(encoded, "WEBVTT\nX-TIMESTAMP-MAP=LOCAL:00:00:00.000,MPEGTS:900000")
     end
   end
 
