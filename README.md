@@ -2,7 +2,7 @@
 
 > A dead simple vtt parser in Elixir.
 
-[![CircleCI](https://circleci.com/gh/grain-team/vttyl.svg?style=svg)](https://circleci.com/gh/grain-team/vttyl) [![Hex version badge](https://img.shields.io/hexpm/v/vttyl.svg)](https://hex.pm/packages/vttyl)
+[![Hex version badge](https://img.shields.io/hexpm/v/vttyl.svg)](https://hex.pm/packages/vttyl)
 
 ## Installation
 
